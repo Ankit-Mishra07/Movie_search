@@ -56,7 +56,15 @@
             width:100px;
             border-radius: 5px;
         }
-
+        #recom {
+            background-color: yellow;
+            display: inline-block;
+            padding:5px;
+            text-decoration: underline;
+            border-radius: 3px;
+            margin-right: 3px;
+    
+        }
 
     </style>
 </head>
@@ -125,7 +133,18 @@ function showMovies(movies) {
     let language = document.createElement("p")
     language.innerText = "Language : "+movies.Language
 
+    if(movies.imdbRating > 8.5) {
+
+    let recommended = document.createElement("p")
+    recommended.textContent = "Recommended"
+    recommended.style.color = "black"
+    recommended.setAttribute("id" , "recom")
+    imdb.style.display = "inline-block"
+    div.append(poster,title,release_date,recommended,imdb,language)
+    }else {
+
     div.append(poster,title,release_date,imdb,language)
+    }
 
     if(movies.Title === undefined) {
         Showerror()
