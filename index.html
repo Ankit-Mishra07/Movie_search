@@ -17,6 +17,15 @@
             align-items: center;
             padding:10%;
         }
+        #movies > div {
+            background-color: grey;
+            border-radius: 10px;
+            padding:20px
+        }
+        #movies > div > p {
+            font-weight: bold;
+            color: white;
+        }
         #nav {
             width:80%;
             /* background-color: rgb(243, 239, 234); */
@@ -48,6 +57,7 @@
             border-radius: 5px;
         }
 
+
     </style>
 </head>
 <body>
@@ -62,6 +72,8 @@
 </body>
 </html>
 <script>
+
+    // gh repo clone Ankit-Mishra07/Movie_search
 // http://www.omdbapi.com/?s=Avengers&apikey=2b79427
 
 let container = document.getElementById("movies")
@@ -70,6 +82,7 @@ function getMovies() {
 
     let moviename = document.getElementById("search").value
 
+   // let err = "ERROR"
 
 
     // let res = await fetch(`http://www.omdbapi.com/?t=${moviename}&apikey=2b79427`)
@@ -87,6 +100,7 @@ function getMovies() {
     })
 
 
+
 }
 
 
@@ -100,22 +114,35 @@ function showMovies(movies) {
     poster.src = movies.Poster
 
     let release_date = document.createElement("p")
-    release_date.innerText = movies.Released
+    release_date.innerText = "Released : "+ movies.Released
 
     let title = document.createElement("p")
-    title.innerText = movies.Title
+    title.innerText = "Title : " + movies.Title
 
     let imdb = document.createElement("p")
-    imdb.innerText = movies.imdbRating
+    imdb.innerText = "IMDB Rating : "+movies.imdbRating
 
     let language = document.createElement("p")
-    language.innerText = movies.Language
+    language.innerText = "Language : "+movies.Language
 
-    div.append(poster,release_date,title,imdb,language)
+    div.append(poster,title,release_date,imdb,language)
+
+    if(movies.Title === undefined) {
+        Showerror()
+    }else {
    
     container.append(div)
+    }
 
 
+}
+
+function Showerror() {
+    container.innerHTML = null
+    let errimg = document.createElement("img")
+    errimg.style.width = "500px"
+    errimg.src = "https://ucarecdn.com/e0a5b7b8-33ad-4304-9c1c-0253f97bf48c/"
+    container.append(errimg)
 }
 
 </script>
