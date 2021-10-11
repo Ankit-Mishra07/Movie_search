@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+    <style>
+        body{
+            background-image: url("https://th.bing.com/th/id/OIP.QnTaUs4BXrqFbpkvUtNPIAHaFj?w=228&h=180&c=7&r=0&o=5&pid=1.7");
+            background-size:cover ;
+       }
+        
+        #movies {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding:10%;
+        }
+        #nav {
+            width:80%;
+            /* background-color: rgb(243, 239, 234); */
+            margin:auto;
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        #search {
+            width:50%;
+            height:40px;
+            box-sizing: border-box;
+            padding:10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        #search:hover {
+            border: 5px solid blue;
+            background-color: whitesmoke;
+        }
+        #search_btn {
+            padding:10px;
+            background-color: rgb(31, 31, 255);
+            color:white;
+            font-weight: bold;
+            width:100px;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="nav">
+    <input type="search" placeholder="Search your movies here" id="search">
+    <button onclick="getMovies()" id="search_btn">Search</button>
+</div>
+    <div id="movies">
+
+    </div>
+
+</body>
+</html>
+<script>
+// http://www.omdbapi.com/?s=Avengers&apikey=2b79427
+
+let container = document.getElementById("movies")
+
+function getMovies() {
+
+    let moviename = document.getElementById("search").value
+
+
+
+    // let res = await fetch(`http://www.omdbapi.com/?t=${moviename}&apikey=2b79427`)
+
+    // let data = await res.json()
+    
+    // showMovies(data)
+
+    fetch(`http://www.omdbapi.com/?t=${moviename}&apikey=2b79427`)
+
+    .then(function(res){
+        res.json().then(function(res){
+            showMovies(res)
+        })
+    })
+
+
+}
+
+
+
+function showMovies(movies) {
+
+    container.innerHTML = null
+    let div = document.createElement("div")
+    
+    let poster = document.createElement("img")
+    poster.src = movies.Poster
+
+    let release_date = document.createElement("p")
+    release_date.innerText = movies.Released
+
+    let title = document.createElement("p")
+    title.innerText = movies.Title
+
+    let imdb = document.createElement("p")
+    imdb.innerText = movies.imdbRating
+
+    let language = document.createElement("p")
+    language.innerText = movies.Language
+
+    div.append(poster,release_date,title,imdb,language)
+   
+    container.append(div)
+
+
+}
+
+</script>
