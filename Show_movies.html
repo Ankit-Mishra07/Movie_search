@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just Movies Details</title>
+    <style>
+                *{
+            margin:0px;
+            padding:0px;
+            box-sizing: border-box;
+        }
+        #nav {
+            background-color: black;
+            color:white;
+            padding:30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+        .nav-list {
+            display: flex;
+
+        }
+        .nav-list li {
+            list-style: none;
+            margin:0px 10px;
+        }
+        #search_movies {
+            width:350px;
+            padding:5px;
+        }
+        #showmovie {
+            width:350px;
+            border: 1px solid blue;
+            height:600px;
+            position: fixed;
+            background-color: black;
+            color:white;
+            overflow: scroll;
+            display: none;
+
+        }
+        .subs {
+            background-color: rgb(62, 62, 212);
+            color:white;
+            padding:8px;
+            
+        }
+        #showmovie div {
+            background-color: rgb(29, 28, 28);
+    
+        }
+        #result {
+            display: flex;
+            padding:10px;
+            border-bottom:1px solid black;
+        }
+        #poster {
+            width:150px;
+            height: 100px;
+        }
+
+        #moviebox {
+            background-color: rgb(29, 12, 12);
+            /* position: relative; */
+            display: flex;
+           
+            padding: 40px;
+        }
+        #moviebox p {
+            color:white;
+            margin:10px;
+        }
+        #moviebox img {
+            width:60%;
+            height:400px
+        }
+        #moviebox:hover .watch {
+            
+                display: block;
+            
+        }
+
+        #recom {
+            background-color: yellow;
+            font-weight: bold;
+            text-decoration: underline;
+            Padding:10px;
+            border-radius: 4px;
+            color: black;
+        }
+        .watch {
+            position: absolute;
+            display: none;
+            top:30px;
+            left:50px;
+            color:blue;
+        }
+
+    </style>
+</head>
+<body>
+    <nav id="nav">
+        <ul class="nav-list">
+            <li>Disney+Hotstar</li>
+            <li>TV</li>
+            <li>Movies</li>
+            <li>Sports</li>
+            <li>Disney+</li>
+            <li>KIDS</li>
+        </ul>
+        <div>
+            <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search" >
+            <button class="subs">SUBSCRIBE</button>
+            <button>LOGIN</button>
+            <div id="showmovie">
+
+            </div>
+        </div>
+        
+    </nav>
+    <div id="moviebox">
+
+        <p class="watch"> < Watch Now > </p>
+
+    </div>
+    
+    
+</body>
+</html>
+
+<script>
+
+let body = document.querySelector("body")
+
+body.addEventListener("click", hide)
+function hide() {
+
+    setTimeout(function(){
+        container.style.display="none"
+    },1000)
+    
+}
+
+    function showbox() {
+
+    let container = document.getElementById("moviebox")
+
+    let mymovie = JSON.parse(localStorage.getItem("Justmovie"))
+
+    let movie = mymovie[mymovie.length-1]
+
+    let poster = document.createElement("img")
+    poster.src= movie.Poster
+
+    let title = document.createElement("p")
+    title.innerText = movie.Title
+    
+    let release = document.createElement("p")
+    release.innerText = "Released : " + movie.Released
+
+    let imdb = document.createElement("p")
+    imdb.textContent = "IMDB Rating : "+movie.imdbRating
+
+    
+
+    let cast = document.createElement("p")
+    cast.innerText ="CAST : "+ movie.Actors
+
+    let language = document.createElement("p")
+    language.innerText = movie.Language
+
+    let recom = document.createElement("button")
+    recom.setAttribute("id" , "recom")
+    recom.style.color="black"
+    recom.textContent = "Recommonded"
+
+    let plot = document.createElement("p")
+    plot.innerText = "PLOT : "+movie.Plot
+
+    let textdiv = document.createElement("div")
+
+    
+
+    if(movie.imdbRating > 8) {
+        textdiv.append(recom,title,release,imdb,language,cast,plot)
+        container.append(poster,textdiv)
+    }else {
+
+        textdiv.append(title,release,imdb,language,cast,plot)
+
+    container.append(poster,textdiv)
+    }
+
+
+    }
+
+    showbox()
+
+    
+// 953076d46292d5b9b918b65d89cc9419
+// https://api.themoviedb.org/3/movie/550?api_key=953076d46292d5b9b918b65d89cc9419
+
+// let body = document.querySelector("body")
+
+// body.addEventListener("click", hide)
+// function hide() {
+//     container.style.display="none"
+//
+
+let container = document.getElementById("showmovie")
+let timerId;
+
+//let imdb;
+
+async function searchMovies(movie_name) {
+
+    try{
+        let res = await fetch(`http://www.omdbapi.com/?apikey=2b79427&s=${movie_name}`)
+        let data = await res.json()
+        console.log(data)
+        return data
+    } catch(e){
+        console.log(e)
+    }
+
+}
+// async function Mymovies(myid) {
+//     try{
+//         let resp = await fetch(`http://www.omdbapi.com/?i=${myid}`)
+//         let mydata = await resp.json()
+//         return mydata
+//     }catch(e){
+//         console.log(e)
+//     }
+// }
+
+function AppendMovies(movies) {
+
+    if(movies === undefined) {
+        return false
+    }
+
+    container.innerHTML = null
+
+    movies.forEach(function(movie){
+       
+    let div = document.createElement("div")
+    div.setAttribute("id" , "result")
+
+    let imdbid = document.createElement("p")
+    imdbid.innerText = movie.imdbID
+
+    //imdb = movie.imdbID
+
+  
+    
+    let poster = document.createElement("img")
+    poster.src = movie.Poster
+    poster.setAttribute("id" , "poster")
+
+   
+
+    let title = document.createElement("button")
+    title.innerText = movie.Title
+    title.style.margin = "5px 0px"
+
+    title.onclick = function() {
+        addtodetail(movie.imdbID)
+    }
+    
+
+    let year = document.createElement("p")
+    year.textContent = movie.Year
+
+    let yt = document.createElement("div")
+    yt.style.marginLeft = "8px"
+    yt.append(title,year)
+
+    div.append(poster,yt)
+
+    container.append(div)
+    })
+}
+
+async function main() {
+    let name = document.getElementById("search_movies").value
+
+    // get search Movies
+
+    if(name.length < 3) {
+        return false
+    }
+
+    let res = await searchMovies(name)
+
+   let show = res.Search
+    AppendMovies(show)
+
+   // console.log(res)
+}
+
+function debounce(func, delay){
+
+container.style.display = "block"
+if(timerId) {
+clearTimeout(timerId)
+}
+
+timerId =  setTimeout(function(){
+
+    func();
+
+},delay)
+
+}
+
+if(localStorage.getItem("Justmovie") === null) {
+        localStorage.setItem("Justmovie",JSON.stringify([]))
+    }
+
+function addtodetail(imdb) {
+    
+   // let im = imdb.imdbID
+   console.log("hero")
+    async function send(imdb) {
+       
+        try{
+        let response = await fetch(`http://www.omdbapi.com/?apikey=2b79427&i=${imdb}`)
+        let moviedata = await response.json()
+        let choice = JSON.parse(localStorage.getItem("Justmovie"))
+       choice.push(moviedata)
+localStorage.setItem("Justmovie" , JSON.stringify(choice))
+        }catch(e) {
+            console.log(e)
+        }
+    }
+
+    send(imdb)
+
+    setTimeout(function(){
+
+        window.location.href = "Show_movies.html"
+    },2000)
+}
+
+
+
+
+</script>
