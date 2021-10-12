@@ -10,6 +10,10 @@
             margin:0px;
             padding:0px;
             box-sizing: border-box;
+            color: white;
+        }
+        body {
+            background-color: #3A4A59;
         }
         #nav {
             background-color: black;
@@ -31,6 +35,7 @@
         #search_movies {
             width:350px;
             padding:5px;
+            color: black;
         }
         #showmovie {
             width:350px;
@@ -72,6 +77,24 @@
             width:100%;
             height:400px;
         }
+
+        #popular_movies {
+           display:flex;
+           
+        }
+        #popular_movies img {
+            width:100%;
+            height:200px;
+            border-radius: 5PX;
+        }
+        #popular_movies div {
+            width:400px;
+            margin:10px;
+        }
+
+        #popular_movies img:hover {
+            opacity: 0.4;
+        }
     </style>
 </head>
 <body>
@@ -86,7 +109,7 @@
             <li>KIDS</li>
         </ul>
         <div>
-            <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search" >
+            <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search" style="color: black;">
             <button class="subs">SUBSCRIBE</button>
             <button style="border:none;background-color: black;color: white;">LOGIN</button>
             <div id="showmovie">
@@ -97,6 +120,11 @@
     </nav>
 
     <div id="myslideshow"></div>
+
+
+    <a href="popular.html" ><h2 style="margin: 20px 10px;">POPULAR MOVIES</h2></a>
+
+    <div id="popular_movies"></div>
     
 </body>
 </html>
@@ -260,10 +288,10 @@ localStorage.setItem("Justmovie" , JSON.stringify(choice))
 
 
 
-let images = [
-    "https://images.pexels.com/photos/733745/pexels-photo-733745.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    "https://images.pexels.com/photos/3311574/pexels-photo-3311574.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    "https://images.pexels.com/photos/4536012/pexels-photo-4536012.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+let images = [        "https://th.bing.com/th/id/OIP.UrS-sqXfgy2z3iLl5bPpVQHaLH?w=203&h=304&c=7&r=0&o=5&pid=1.7",
+        "https://th.bing.com/th/id/OIP.bvPSixo2RmR26vaheETAtAHaJ4?w=203&h=271&c=7&r=0&o=5&pid=1.7",
+        "https://th.bing.com/th/id/OIP.4_-Vhu3RvHkRzZtoAmq6ewHaKY?w=203&h=284&c=7&r=0&o=5&pid=1.7",
+        "https://th.bing.com/th/id/OIP.SF0xQr6JiQnv0uNe_nyKAQHaLW?w=201&h=309&c=7&r=0&o=5&pid=1.7"
   ];
 
   let cont = document.getElementById("myslideshow");
@@ -302,4 +330,51 @@ let images = [
   function stopinterval () {
       clearInterval(interval)
   }
+
+
+
+
+
+
+
+  let popularbox = document.getElementById("popular_movies")
+
+async function PopularShow() {
+    try{
+    let res = await fetch("https://api.themoviedb.org/3/movie/popular?api_key=953076d46292d5b9b918b65d89cc9419&language=en-US&page=1")
+    let data =await res.json()
+        let resul = data.results
+    ShowpopularMovies(resul)
+    
+    }catch(e) {
+        console.log(e)
+    }
+
+}
+
+PopularShow()
+
+function ShowpopularMovies(popu) {
+    
+for(let i = 0; i < 10; i++) {
+        let div = document.createElement("div")
+
+        let img = document.createElement("img")
+        img.src = `https://image.tmdb.org/t/p/w500${popu[i].poster_path}`
+
+        let title = document.createElement("p")
+        title.textContent = popu[i].title
+
+        // let released = document.createElement("p")
+        // released.textContent = "RELEASE DATE : "+popu.release_date
+
+        // let imdbrate = document.createElement("p")
+        // imdbrate.textContent = "IMDB RATING : " + popu.vote_average
+
+        div.append(img,title)
+
+        popularbox.append(div)
+
+    }
+}
 </script>
