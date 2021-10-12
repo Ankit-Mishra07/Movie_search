@@ -43,10 +43,11 @@
             display: none;
 
         }
+    
         .subs {
             background-color: rgb(62, 62, 212);
             color:white;
-            padding:8px;
+            padding:5px;
             
         }
         #showmovie div {
@@ -61,6 +62,15 @@
         #poster {
             width:150px;
             height: 100px;
+        }
+        #myslideshow {
+            width:80%;
+            margin:auto;
+            margin-top: 10px;
+        }
+        #myslideshow img {
+            width:100%;
+            height:400px;
         }
     </style>
 </head>
@@ -78,13 +88,15 @@
         <div>
             <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search" >
             <button class="subs">SUBSCRIBE</button>
-            <button>LOGIN</button>
+            <button style="border:none;background-color: black;color: white;">LOGIN</button>
             <div id="showmovie">
 
             </div>
         </div>
         
     </nav>
+
+    <div id="myslideshow"></div>
     
 </body>
 </html>
@@ -93,12 +105,16 @@
 // 953076d46292d5b9b918b65d89cc9419
 // https://api.themoviedb.org/3/movie/550?api_key=953076d46292d5b9b918b65d89cc9419
 
-// let body = document.querySelector("body")
+let body = document.querySelector("body")
 
-// body.addEventListener("click", hide)
-// function hide() {
-//     container.style.display="none"
-// }
+body.addEventListener("click", hide)
+function hide() {
+
+    setTimeout(function(){
+        container.style.display="none"
+    },1000)
+    
+}
 
 let container = document.getElementById("showmovie")
 let timerId;
@@ -236,4 +252,54 @@ localStorage.setItem("Justmovie" , JSON.stringify(choice))
     },2000)
 }
 
+
+
+
+
+
+
+
+
+let images = [
+    "https://images.pexels.com/photos/733745/pexels-photo-733745.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    "https://images.pexels.com/photos/3311574/pexels-photo-3311574.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    "https://images.pexels.com/photos/4536012/pexels-photo-4536012.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+  ];
+
+  let cont = document.getElementById("myslideshow");
+ 
+  let interval;
+  let ima = document.createElement("img")
+  ima.src = images[images.length-1]
+
+  cont.append(ima)
+
+
+  function startslideshow() {
+
+  let counter = 0;
+
+   interval = setInterval(function() {
+
+    cont.innerHTML = null
+
+    if(counter === images.length) {
+        counter=0;
+    }
+    let img = document.createElement("img")
+
+    img.src=images[counter]
+
+    cont.append(img)
+    counter++
+
+  },3000);
+
+  }
+
+  startslideshow();
+
+  function stopinterval () {
+      clearInterval(interval)
+  }
 </script>
