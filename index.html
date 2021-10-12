@@ -4,164 +4,203 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Search</title>
+    <title>Just Movies</title>
     <style>
-        body{
-            background-image: url("https://th.bing.com/th/id/OIP.QnTaUs4BXrqFbpkvUtNPIAHaFj?w=228&h=180&c=7&r=0&o=5&pid=1.7");
-            background-size:cover ;
-       }
-        
-        #movies {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding:10%;
-        }
-        #movies > div {
-            background-color: grey;
-            border-radius: 10px;
-            padding:20px
-        }
-        #movies > div > p {
-            font-weight: bold;
-            color: white;
+        *{
+            margin:0px;
+            padding:0px;
+            box-sizing: border-box;
         }
         #nav {
-            width:80%;
-            /* background-color: rgb(243, 239, 234); */
-            margin:auto;
-            margin-top: 20px;
-            text-align: center;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        #search {
-            width:50%;
-            height:40px;
-            box-sizing: border-box;
-            padding:10px;
-            text-align: center;
-            border-radius: 5px;
-        }
-        #search:hover {
-            border: 5px solid blue;
-            background-color: whitesmoke;
-        }
-        #search_btn {
-            padding:10px;
-            background-color: rgb(31, 31, 255);
+            background-color: black;
             color:white;
-            font-weight: bold;
-            width:100px;
-            border-radius: 5px;
+            padding:30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
         }
-        #recom {
-            background-color: yellow;
-            display: inline-block;
+        .nav-list {
+            display: flex;
+
+        }
+        .nav-list li {
+            list-style: none;
+            margin:0px 10px;
+        }
+        #search_movies {
+            width:350px;
             padding:5px;
-            text-decoration: underline;
-            border-radius: 3px;
-            margin-right: 3px;
+        }
+        #showmovie {
+            width:350px;
+            border: 1px solid blue;
+            height:600px;
+            position: absolute;
+            background-color: black;
+            color:white;
+            overflow: scroll;
+            display: none;
+
+        }
+        .subs {
+            background-color: rgb(62, 62, 212);
+            color:white;
+            padding:8px;
+            
+        }
+        #showmovie div {
+            background-color: rgb(56, 50, 50);
     
         }
-
+        #result {
+            display: flex;
+            padding:10px;
+            border-bottom:1px solid black;
+        }
+        #poster {
+            width:150px;
+            height: 100px;
+        }
     </style>
 </head>
 <body>
-    <div id="nav">
-    <input type="search" placeholder="Search your movies here" id="search">
-    <button onclick="getMovies()" id="search_btn">Search</button>
-</div>
-    <div id="movies">
 
-    </div>
+    <nav id="nav">
+        <ul class="nav-list">
+            <li>Disney+Hotstar</li>
+            <li>TV</li>
+            <li>Movies</li>
+            <li>Sports</li>
+            <li>Disney+</li>
+            <li>KIDS</li>
+        </ul>
+        <div>
+            <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search" >
+            <button class="subs">SUBSCRIBE</button>
+            <button>LOGIN</button>
+            <div id="showmovie">
 
+            </div>
+        </div>
+        
+    </nav>
+    
 </body>
 </html>
 <script>
 
-    // gh repo clone Ankit-Mishra07/Movie_search
-// http://www.omdbapi.com/?s=Avengers&apikey=2b79427
+// 953076d46292d5b9b918b65d89cc9419
+// https://api.themoviedb.org/3/movie/550?api_key=953076d46292d5b9b918b65d89cc9419
 
-let container = document.getElementById("movies")
+let body = document.querySelector("body")
 
-function getMovies() {
-
-    let moviename = document.getElementById("search").value
-
-   // let err = "ERROR"
-
-
-    // let res = await fetch(`http://www.omdbapi.com/?t=${moviename}&apikey=2b79427`)
-
-    // let data = await res.json()
-    
-    // showMovies(data)
-
-    fetch(`http://www.omdbapi.com/?t=${moviename}&apikey=2b79427`)
-
-    .then(function(res){
-        res.json().then(function(res){
-            showMovies(res)
-        })
-    })
-
-
-
+body.addEventListener("click", hide)
+function hide() {
+    container.style.display="none"
 }
 
+let container = document.getElementById("showmovie")
+let timerId;
 
+async function searchMovies(movie_name) {
 
-function showMovies(movies) {
+    try{
+        let res = await fetch(`http://www.omdbapi.com/?apikey=2b79427&s=${movie_name}`)
+        let data = await res.json()
+        return data
+    } catch(e){
+        console.log(e)
+    }
+
+}
+// async function Mymovies(myid) {
+//     try{
+//         let resp = await fetch(`http://www.omdbapi.com/?i=${myid}`)
+//         let mydata = await resp.json()
+//         return mydata
+//     }catch(e){
+//         console.log(e)
+//     }
+// }
+
+function AppendMovies(movies) {
+
+    if(movies === undefined) {
+        return false
+    }
 
     container.innerHTML = null
+
+    movies.forEach(function(movie){
+       
     let div = document.createElement("div")
+    div.setAttribute("id" , "result")
+
+    div.onclick = function(){
+        addtodetail()
+    }
     
     let poster = document.createElement("img")
-    poster.src = movies.Poster
-
-    let release_date = document.createElement("p")
-    release_date.innerText = "Released : "+ movies.Released
+    poster.src = movie.Poster
+    poster.setAttribute("id" , "poster")
 
     let title = document.createElement("p")
-    title.innerText = "Title : " + movies.Title
+    title.innerText = movie.Title
+    title.style.margin = "5px 0px"
+    
 
-    let imdb = document.createElement("p")
-    imdb.innerText = "IMDB Rating : "+movies.imdbRating
+    let year = document.createElement("p")
+    year.textContent = movie.Year
 
-    let language = document.createElement("p")
-    language.innerText = "Language : "+movies.Language
+    let yt = document.createElement("div")
+    yt.style.marginLeft = "8px"
+    yt.append(title,year)
 
-    if(movies.imdbRating > 8.5) {
+    div.append(poster,yt)
 
-    let recommended = document.createElement("p")
-    recommended.textContent = "Recommended"
-    recommended.style.color = "black"
-    recommended.setAttribute("id" , "recom")
-    imdb.style.display = "inline-block"
-    div.append(poster,title,release_date,recommended,imdb,language)
-    }else {
-
-    div.append(poster,title,release_date,imdb,language)
-    }
-
-    if(movies.Title === undefined) {
-        Showerror()
-    }else {
-   
     container.append(div)
+    })
+}
+
+async function main() {
+    let name = document.getElementById("search_movies").value
+
+    // get search Movies
+
+    if(name.length < 3) {
+        return false
     }
 
+    let res = await searchMovies(name)
+
+   let show = res.Search
+    AppendMovies(show)
+
+    console.log(res)
+}
+
+function debounce(func, delay){
+
+container.style.display = "block"
+if(timerId) {
+clearTimeout(timerId)
+}
+
+timerId =  setTimeout(function(){
+
+    func();
+
+},delay)
 
 }
 
-function Showerror() {
-    container.innerHTML = null
-    let errimg = document.createElement("img")
-    errimg.style.width = "500px"
-    errimg.src = "https://ucarecdn.com/e0a5b7b8-33ad-4304-9c1c-0253f97bf48c/"
-    container.append(errimg)
-}
+if(localStorage.getItem("Justmovie") === null) {
+        localStorage.setItem("Justmovie",JSON.stringify([]))
+    }
+
+// function addtodetail() {
+//     let 
+// }
 
 </script>
