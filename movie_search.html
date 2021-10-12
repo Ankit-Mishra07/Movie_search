@@ -93,21 +93,24 @@
 // 953076d46292d5b9b918b65d89cc9419
 // https://api.themoviedb.org/3/movie/550?api_key=953076d46292d5b9b918b65d89cc9419
 
-let body = document.querySelector("body")
+// let body = document.querySelector("body")
 
-body.addEventListener("click", hide)
-function hide() {
-    container.style.display="none"
-}
+// body.addEventListener("click", hide)
+// function hide() {
+//     container.style.display="none"
+// }
 
 let container = document.getElementById("showmovie")
 let timerId;
+
+//let imdb;
 
 async function searchMovies(movie_name) {
 
     try{
         let res = await fetch(`http://www.omdbapi.com/?apikey=2b79427&s=${movie_name}`)
         let data = await res.json()
+        console.log(data)
         return data
     } catch(e){
         console.log(e)
@@ -137,17 +140,26 @@ function AppendMovies(movies) {
     let div = document.createElement("div")
     div.setAttribute("id" , "result")
 
-    div.onclick = function(){
-        addtodetail()
-    }
+    let imdbid = document.createElement("p")
+    imdbid.innerText = movie.imdbID
+
+    //imdb = movie.imdbID
+
+  
     
     let poster = document.createElement("img")
     poster.src = movie.Poster
     poster.setAttribute("id" , "poster")
 
-    let title = document.createElement("p")
+   
+
+    let title = document.createElement("button")
     title.innerText = movie.Title
     title.style.margin = "5px 0px"
+
+    title.onclick = function() {
+        addtodetail(movie.imdbID)
+    }
     
 
     let year = document.createElement("p")
@@ -177,7 +189,7 @@ async function main() {
    let show = res.Search
     AppendMovies(show)
 
-    console.log(res)
+   // console.log(res)
 }
 
 function debounce(func, delay){
@@ -199,8 +211,29 @@ if(localStorage.getItem("Justmovie") === null) {
         localStorage.setItem("Justmovie",JSON.stringify([]))
     }
 
-// function addtodetail() {
-//     let 
-// }
+function addtodetail(imdb) {
+    
+   // let im = imdb.imdbID
+   console.log("hero")
+    async function send(imdb) {
+       
+        try{
+        let response = await fetch(`http://www.omdbapi.com/?apikey=2b79427&i=${imdb}`)
+        let moviedata = await response.json()
+        let choice = JSON.parse(localStorage.getItem("Justmovie"))
+       choice.push(moviedata)
+localStorage.setItem("Justmovie" , JSON.stringify(choice))
+        }catch(e) {
+            console.log(e)
+        }
+    }
+
+    send(imdb)
+
+    setTimeout(function(){
+
+        window.location.href = "Show_movies.html"
+    },2000)
+}
 
 </script>
