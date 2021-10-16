@@ -510,11 +510,16 @@ function Signup(e) {
     })
     .then((res) =>{
         console.log(res)
+        success()
     })
     .catch((err) => {
         console.log(err)
     })
 
+}
+
+function success() {
+    alert("Signed up successfully")
 }
 
 
@@ -595,7 +600,7 @@ function successfull(name) {
     your_name.textContent = name
 
     your_name.style.display = "block"
-
+    alert(`Logged in successfully`)
 }
 
 </script>

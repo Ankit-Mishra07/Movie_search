@@ -29,9 +29,87 @@
         #popular_movies img:hover {
             opacity: 0.4;
         }
+
+
+
+        #nav {
+            background-color: rgb(19, 15, 15);
+            color:white;
+            padding:30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+        .nav-list {
+            display: flex;
+
+        }
+        .nav-list li {
+            list-style: none;
+            margin:0px 10px;
+        }
+        #search_movies {
+            width:350px;
+            padding:5px;
+            color: white;
+            background-color: #141A28;
+            border-bottom: 1px solid white;
+        }
+        #showmovie {
+            width:350px;
+            border: 1px solid blue;
+            height:600px;
+            position: absolute;
+            background-color: black;
+            color:white;
+            overflow: scroll;
+            display: none;
+
+        }
+    
+        .subs {
+            background-color: rgb(62, 62, 212);
+            color:white;
+            padding:5px;
+            
+        }
+        #showmovie div {
+            background-color: rgb(56, 50, 50);
+    
+        }
+        #result {
+            display: flex;
+            padding:10px;
+            border-bottom:1px solid black;
+        }
+        #poster {
+            width:150px;
+            height: 100px;
+        }
     </style>
 </head>
 <body>
+
+    <nav id="nav">
+        <ul class="nav-list">
+            <a href="movie_search.html" style="text-decoration: none;"><li>Disney+Hotstar</li></a>
+            <li>TV</li>
+            <li>Movies</li>
+            <li>Sports</li>
+            <li>Disney+</li>
+            <li>KIDS</li>
+        </ul>
+        <div>
+            <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search">
+            <button class="subs">SIGNUP</button>
+            <button style="border:none;background-color: black;color: white;">LOGIN</button>
+            <div id="showmovie">
+
+            </div>
+        </div>
+        
+    </nav>
 
     <h1>POPULAR MOVIES</h1>
 
@@ -82,5 +160,157 @@
 
         })
     }
+
+
+
+
+
+    let body = document.querySelector("body")
+
+body.addEventListener("click", hide)
+function hide() {
+
+    setTimeout(function(){
+        container.style.display="none"
+    },1000)
+    
+}
+
+let container = document.getElementById("showmovie")
+let timerId;
+
+//let imdb;
+
+async function searchMovies(movie_name) {
+
+    try{
+        let res = await fetch(`http://www.omdbapi.com/?apikey=2b79427&s=${movie_name}`)
+        let data = await res.json()
+        console.log(data)
+        return data
+    } catch(e){
+        console.log(e)
+    }
+
+}
+// async function Mymovies(myid) {
+//     try{
+//         let resp = await fetch(`http://www.omdbapi.com/?i=${myid}`)
+//         let mydata = await resp.json()
+//         return mydata
+//     }catch(e){
+//         console.log(e)
+//     }
+// }
+
+function AppendMovies(movies) {
+
+    if(movies === undefined) {
+        return false
+    }
+
+    container.innerHTML = null
+
+    movies.forEach(function(movie){
+       
+    let div = document.createElement("div")
+    div.setAttribute("id" , "result")
+
+    let imdbid = document.createElement("p")
+    imdbid.innerText = movie.imdbID
+
+    //imdb = movie.imdbID
+
+  
+    
+    let poster = document.createElement("img")
+    poster.src = movie.Poster
+    poster.setAttribute("id" , "poster")
+
+   
+
+    let title = document.createElement("button")
+    title.innerText = movie.Title
+    title.style.margin = "5px 0px"
+    title.style.backgroundColor = "black"
+
+    title.onclick = function() {
+        addtodetail(movie.imdbID)
+    }
+    
+
+    let year = document.createElement("p")
+    year.textContent = movie.Year
+
+    let yt = document.createElement("div")
+    yt.style.marginLeft = "8px"
+    yt.append(title,year)
+
+    div.append(poster,yt)
+
+    container.append(div)
+    })
+}
+
+async function main() {
+    let name = document.getElementById("search_movies").value
+
+    // get search Movies
+
+    if(name.length < 3) {
+        return false
+    }
+
+    let res = await searchMovies(name)
+
+   let show = res.Search
+    AppendMovies(show)
+
+   // console.log(res)
+}
+
+function debounce(func, delay){
+
+container.style.display = "block"
+if(timerId) {
+clearTimeout(timerId)
+}
+
+timerId =  setTimeout(function(){
+
+    func();
+
+},delay)
+
+}
+
+if(localStorage.getItem("Justmovie") === null) {
+        localStorage.setItem("Justmovie",JSON.stringify([]))
+    }
+
+function addtodetail(imdb) {
+    
+   // let im = imdb.imdbID
+   console.log("hero")
+    async function send(imdb) {
+       
+        try{
+        let response = await fetch(`http://www.omdbapi.com/?apikey=2b79427&i=${imdb}`)
+        let moviedata = await response.json()
+        let choice = JSON.parse(localStorage.getItem("Justmovie"))
+       choice.push(moviedata)
+localStorage.setItem("Justmovie" , JSON.stringify(choice))
+        }catch(e) {
+            console.log(e)
+        }
+    }
+
+    send(imdb)
+
+    setTimeout(function(){
+
+        window.location.href = "Show_movies.html"
+    },2000)
+}
 
 </script>
