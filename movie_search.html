@@ -16,7 +16,7 @@
             background-color: #3A4A59;
         }
         #nav {
-            background-color: black;
+            background-color: rgb(19, 15, 15);
             color:white;
             padding:30px;
             display: flex;
@@ -35,7 +35,9 @@
         #search_movies {
             width:350px;
             padding:5px;
-            color: black;
+            color: white;
+            background-color: #141A28;
+            border-bottom: 1px solid white;
         }
         #showmovie {
             width:350px;
@@ -77,6 +79,9 @@
             width:100%;
             height:400px;
         }
+        #myslideshow img:hover {
+            opacity: 0.5;
+        }
 
         #popular_movies {
            display:flex;
@@ -95,6 +100,63 @@
         #popular_movies img:hover {
             opacity: 0.4;
         }
+
+
+        #signup-page {
+            /* background-color: lightgray; */
+            display: none;
+            width:15%;
+            position:absolute;
+            top:9%;
+            right:5%;
+            padding:15px 10px;
+        }
+        #signup-page input {
+            border:none;
+            border-bottom: 1px solid grey;
+            padding:5px;
+            width:100%;
+            border-radius: 5px;
+            margin-top: 10px;
+            background-color: black;
+            color: white;
+        }
+
+        #sign-cross {
+            background-color: red;
+            padding:5px;
+            border-radius: 5px;
+        }
+
+
+        #login-page {
+            display:none;
+            background-color: lightgray;
+            width:15%;
+            position:absolute;
+            top:9%;
+            right:3%;
+            color:black;
+            padding:10px 10px;
+        }
+        #login-page input  {
+            width:100%;
+            padding:5px;
+            margin-top: 10px;
+            border:none;
+            border-bottom: 1px solid grey;
+            border-radius: 5px;
+            color:black;
+        }
+        #cross {
+            background-color: red;
+            margin-left: 80px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #your-name {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -109,11 +171,37 @@
             <li>KIDS</li>
         </ul>
         <div>
-            <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search" style="color: black;">
-            <button class="subs">SUBSCRIBE</button>
-            <button style="border:none;background-color: black;color: white;">LOGIN</button>
-            <div id="showmovie">
+            <input oninput="debounce(main, 1000)" type="text" id="search_movies" placeholder="Search">
+            <button class="subs" onclick="Showsignup()" id="SIGNUP">SIGNUP</button>
+            <button style="border:none;background-color: black;color: white;" onclick="Showlogin()" id="LOGIN">LOGIN</button>
+            <span id="your-name">ankit</span>
 
+            
+            <div id="signup-page">
+                <form action="" id="signup-form" onsubmit="Signup(event)">
+                    <h1>Signup &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button id="sign-cross" onclick="hidesign_page()">X</button></h1>
+                <input type="text" id="name" placeholder="name"> <br>
+                <input type="email" id="email" placeholder="email"> <br>
+                <input type="password" id="password" placeholder="password"> <br>
+                <input type="text" id="username" placeholder="username"> <br>
+                <input type="number" id="mobile" placeholder="mobile"> <br>
+                <input type="text" id="description" placeholder="description"> <br>
+                <input type="submit" >
+                </form>
+            </div>
+
+            <div id="login-page">
+
+                <h3 style="color: black;display: inline-block;">LOGIN</h3> <button id="cross" onclick="hideLogin()" >X</button> <br>
+                <input type="text" placeholder="Username" id="user">
+                <input type="password" placeholder="password" id="pass"> <br>
+                <button style="background-color: black;margin-top: 10px;width:100%;padding:10px;border-radius: 10px;" onclick="login()">LOGIN</button>
+
+            </div>
+            
+
+            <div id="showmovie">
+              
             </div>
         </div>
         
@@ -200,6 +288,7 @@ function AppendMovies(movies) {
     let title = document.createElement("button")
     title.innerText = movie.Title
     title.style.margin = "5px 0px"
+    title.style.backgroundColor = "black"
 
     title.onclick = function() {
         addtodetail(movie.imdbID)
@@ -288,10 +377,10 @@ localStorage.setItem("Justmovie" , JSON.stringify(choice))
 
 
 
-let images = [        "https://th.bing.com/th/id/OIP.UrS-sqXfgy2z3iLl5bPpVQHaLH?w=203&h=304&c=7&r=0&o=5&pid=1.7",
-        "https://th.bing.com/th/id/OIP.bvPSixo2RmR26vaheETAtAHaJ4?w=203&h=271&c=7&r=0&o=5&pid=1.7",
-        "https://th.bing.com/th/id/OIP.4_-Vhu3RvHkRzZtoAmq6ewHaKY?w=203&h=284&c=7&r=0&o=5&pid=1.7",
-        "https://th.bing.com/th/id/OIP.SF0xQr6JiQnv0uNe_nyKAQHaLW?w=201&h=309&c=7&r=0&o=5&pid=1.7"
+let images = [        "https://img1.hotstarext.com/image/upload/f_auto,t_web_m_1x/sources/r1/cms/prod/3201/1063201-h-83bd4677d2b5",
+        "https://img1.hotstarext.com/image/upload/f_auto,t_web_m_1x/sources/r1/cms/prod/905/840905-h",
+        "https://img1.hotstarext.com/image/upload/f_auto,t_web_m_1x/sources/r1/cms/prod/8773/1028773-h-48170a73363e",
+        "https://img1.hotstarext.com/image/upload/f_auto,t_web_m_1x/sources/r1/cms/prod/895/830895-h"
   ];
 
   let cont = document.getElementById("myslideshow");
@@ -377,4 +466,136 @@ for(let i = 0; i < 10; i++) {
 
     }
 }
+
+
+function Showsignup() {
+    let signup_page = document.getElementById("signup-page")
+    signup_page.style.display="block"
+}
+
+function hidesign_page() {
+    let signup_page = document.getElementById("signup-page")
+    signup_page.style.display="none"
+}
+
+
+
+function Signup(e) {
+    e.preventDefault()
+
+    let form = document.getElementById("signup-form")
+
+    let user_data = {
+    name:form.name.value,
+    email:form.email.value,
+    password:form.password.value,
+    username:form.username.value,
+    mobile:form.mobile.value,
+    description:form.description.value,
+    }
+
+    user_data = JSON.stringify(user_data)
+
+    fetch("https://masai-api-mocker.herokuapp.com/auth/register" , {
+
+        method:"POST",
+        body:user_data,
+        headers : {
+            "Content-Type" : "application/json"
+        }
+    })
+
+    .then((res) => {
+        return res.json()
+    })
+    .then((res) =>{
+        console.log(res)
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+
+}
+
+
+function Showlogin() {
+    let login_page = document.getElementById("login-page")
+    login_page.style.display = "block"
+}
+function hideLogin() {
+    let login_page = document.getElementById("login-page")
+    login_page.style.display = "none"
+}
+
+
+function login() {
+
+
+    let username = document.getElementById("user").value
+    let password = document.getElementById("pass").value
+
+    let user_data = {
+        username: username,
+        password: password,
+    }
+
+    let data_to_send = JSON.stringify(user_data)
+
+    fetch("https://masai-api-mocker.herokuapp.com/auth/login", {
+        method:"POST",
+        body: data_to_send,
+        headers: {
+            "Content-Type" : "application/json"
+        }
+    })
+    .then((res) => {
+        return res.json()
+    })
+    .then((res) => {
+        console.log(res) // token
+        fetchmydata(user_data.username,res.token)
+    })
+    .catch((err) => {
+        console.log("err:", err)
+    })
+}
+
+function fetchmydata(username,token) {
+
+    fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`, {
+
+        headers: {
+            "Content-Type" : "application/json",
+            Authorization : `Bearer ${token}`
+        }
+
+    })
+
+    .then((res) => {
+        return res.json()
+    })
+    .then((res) => {
+
+        successfull(res.name)
+        console.log(res) //your all data
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
+
+function successfull(name) {
+    let log = document.getElementById("LOGIN")
+    let sig = document.getElementById("SIGNUP")
+    sig.style.display = "none"
+    log.style.display = "none"
+
+
+    let your_name = document.getElementById("your-name")
+    your_name.textContent = name
+
+    your_name.style.display = "block"
+
+}
+
 </script>
